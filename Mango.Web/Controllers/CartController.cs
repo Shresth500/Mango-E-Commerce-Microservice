@@ -1,4 +1,5 @@
-﻿using Mango.Web.Models;
+﻿using Mango.MessageBus;
+using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,8 @@ namespace Mango.Web.Controllers;
 
 public class CartController(ICartService _cartService) : Controller
 {
+    ResponseDto _responseDto = new ResponseDto { };
+    
     [Authorize]
     public async Task<IActionResult> CartIndex()
     {
@@ -40,6 +43,19 @@ public class CartController(ICartService _cartService) : Controller
         return View();
     }
 
+    [HttpPost]
+    public async Task<IActionResult> EmailCart(CartDto cartDto)
+    {
+        CartDto cart = await LoadCartBasedOnLoggedInUser();
+        cart.CartHeader.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
+        ResponseDto? response = await _cartService.EmailCart(cart);
+        if (response != null & response!.IsSuccess)
+        {
+            TempData["success"] = "Cart updated successfully";
+            return RedirectToAction(nameof(CartIndex));
+        }
+        return View();
+    }
     [HttpPost]
     public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
     {
