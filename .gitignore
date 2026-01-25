@@ -32,6 +32,6 @@
 Thumbs.db
 
 #####################################
-# Optional (recommended)
-#####################################
-**/Properties/launchSettings.json
+# Ignore the connection string inside Mango.MessageBus
+Mango.MessageBus/ConnectionString.cs
+
