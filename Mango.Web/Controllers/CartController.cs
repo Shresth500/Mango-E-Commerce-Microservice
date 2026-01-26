@@ -96,13 +96,19 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
         cart.CartHeader.Name = cartDto.CartHeader.Name;
 
         var response = await _orderService.CreateOrder(cart);
-        OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
+        OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response!.Result)!)!;
 
         if (response != null && response.IsSuccess)
         {
             //get stripe session and redirect to stripe to place order
 
         }
-        return View();
+        return View(cart);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Confirmation(int orderid)
+    {
+        return View(orderid);
     }
 }

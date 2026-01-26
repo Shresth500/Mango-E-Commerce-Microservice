@@ -6,6 +6,8 @@ using Mango.Services.OrderAPI.Service.IService;
 using Mango.Services.OrderAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
+using Stripe.Checkout;
 
 namespace Mango.Services.OrderAPI.Controllers;
 
@@ -35,6 +37,43 @@ public class OrderAPIController(
 
             orderHeaderDto.OrderHeaderId = orderCreated.OrderHeaderId;
             _response.Result = orderHeaderDto;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+        }
+        return _response;
+    }
+
+    [Authorize]
+    [HttpPost("CreateStripeSession")]
+    public async Task<ResponseDto> CreateStripeSession([FromBody] StripeRequestDto stripeRequestDto)
+    {
+        try
+        {
+            var options = new Stripe.Checkout.SessionCreateOptions
+            {
+                SuccessUrl = stripeRequestDto.ApprovedUrl,
+                CancelUrl = stripeRequestDto.CancelUrl,
+                Mode = "payment",
+            };
+            foreach (var items in stripeRequestDto.OrderHeader.OrderDetails)
+            {
+                var sessionItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions {
+                        UnitAmount = (long)(items.Price * 91),
+                        Currency = "usd",
+                    },
+                    Quantity = items.Count,
+                };
+                options.LineItems.Add(sessionItem);
+            }
+            var service = new SessionService();
+            Session session = service.Create(options);
+            _response.IsSuccess = true;
+            _response.Result = stripeRequestDto;
         }
         catch (Exception ex)
         {
