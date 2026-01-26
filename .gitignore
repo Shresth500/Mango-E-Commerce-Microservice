@@ -33,5 +33,5 @@ Thumbs.db
 
 #####################################
 # Ignore the connection string inside Mango.MessageBus
-Mango.MessageBus/ConnectionStrings.cs
+/Mango.MessageBus/ConnectionStrings.cs
 

@@ -1,5 +1,4 @@
-﻿using Mango.MessageBus;
-using Mango.Web.Models;
+﻿using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,6 +77,13 @@ public class CartController(ICartService _cartService) : Controller
             return JsonConvert.DeserializeObject<CartDto>(Convert.ToString(response.Result)!)!;
         }
         return new CartDto();
+    }
+
+    [Authorize]
+    [ActionName("Checkout")]
+    public async Task<IActionResult> CheckOut()
+    {
+        return View(await LoadCartBasedOnLoggedInUser());
     }
 
 
