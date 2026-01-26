@@ -1,4 +1,5 @@
 ﻿using Mango.Web.Models;
+using Mango.Web.Service;
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +8,10 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Mango.Web.Controllers;
 
-public class CartController(ICartService _cartService) : Controller
+public class CartController(ICartService _cartService, IOrderService _orderService) : Controller
 {
     ResponseDto _responseDto = new ResponseDto { };
-    
+
     [Authorize]
     public async Task<IActionResult> CartIndex()
     {
@@ -72,7 +73,7 @@ public class CartController(ICartService _cartService) : Controller
     {
         var userid = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()!.Value;
         var response = await _cartService.GetCartByUserIdAsync(userid!);
-        if(response != null && response.IsSuccess)
+        if (response != null && response.IsSuccess)
         {
             return JsonConvert.DeserializeObject<CartDto>(Convert.ToString(response.Result)!)!;
         }
@@ -80,11 +81,34 @@ public class CartController(ICartService _cartService) : Controller
     }
 
     [Authorize]
-    [ActionName("Checkout")]
     public async Task<IActionResult> CheckOut()
     {
         return View(await LoadCartBasedOnLoggedInUser());
     }
+    [Authorize]
+    [HttpPost]
+    [ActionName("Checkout")]
+    public async Task<IActionResult> CheckOut(CartDto cartDto)
+    {
+        CartDto cart = await LoadCartBasedOnLoggedInUser();
+        cart.CartHeader.Phone = cartDto.CartHeader.Phone;
+        cart.CartHeader.Email = cartDto.CartHeader.Email;
+        cart.CartHeader.Name = cartDto.CartHeader.Name;
 
+        var response = await _orderService.CreateOrder(cart);
+        OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response!.Result)!)!;
 
+        if (response != null && response.IsSuccess)
+        {
+            //get stripe session and redirect to stripe to place order
+
+        }
+        return View(cart);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Confirmation(int orderid)
+    {
+        return View(orderid);
+    }
 }

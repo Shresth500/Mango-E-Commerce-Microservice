@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<IOrderService, OrderService>();
 builder.Services.AddHttpClient<ICouponService,ICouponService>();
 builder.Services.AddHttpClient<IAuthService,AuthService>();
 builder.Services.AddHttpClient<IProductService,ProductService>();
@@ -18,6 +19,7 @@ SD.CouponAPIBase = builder.Configuration["ServiceUrl:CouponAPI"]!;
 SD.AuthAPIBase = builder.Configuration["ServiceUrl:AuthAPIBase"]!;
 SD.ProductAPIBase = builder.Configuration["ServiceUrl:ProductAPI"]!;
 SD.ShoppingCartAPI = builder.Configuration["ServiceUrl:ShoppingCartAPI"]!;
+SD.OrderAPI = builder.Configuration["ServiceUrl:OrderAPI"]!;
 
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IBaseService, BaseService>();
@@ -25,6 +27,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
