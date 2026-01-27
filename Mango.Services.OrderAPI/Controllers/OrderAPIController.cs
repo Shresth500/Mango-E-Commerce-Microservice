@@ -6,7 +6,6 @@ using Mango.Services.OrderAPI.Service.IService;
 using Mango.Services.OrderAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Stripe;
 using Stripe.Checkout;
 
 namespace Mango.Services.OrderAPI.Controllers;
@@ -73,8 +72,8 @@ public class OrderAPIController(
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)(item.Price * 100), // $20.99 -> 2099
-                        Currency = "usd",
+                        UnitAmount = (long)item.Price,
+                        Currency = "inr",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = item.Product.Name
