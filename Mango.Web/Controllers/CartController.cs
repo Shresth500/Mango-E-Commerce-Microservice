@@ -1,6 +1,7 @@
 ﻿using Mango.Web.Models;
 using Mango.Web.Service;
 using Mango.Web.Service.IService;
+using Mango.Web.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -100,8 +101,17 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
 
         if (response != null && response.IsSuccess)
         {
-            //get stripe session and redirect to stripe to place order
-
+            var domain = Request.Scheme + "://" + Request.Host;
+            var stripRequestDto = new StripeRequestDto
+            {
+                CancelUrl = domain + "/cart/checkout",
+                ApprovedUrl = domain + "/cart/Confirmation?orderid=" + orderHeaderDto.OrderHeaderId,
+                OrderHeader = orderHeaderDto,
+            };
+            response = await _orderService.CreateStripeSession(stripRequestDto);
+            var stripeResponse = JsonConvert.DeserializeObject<StripeRequestDto>(Convert.ToString(response!.Result)!);
+            Response!.Headers.Add("Location",stripeResponse.StripeSessionUrl!);
+            return new StatusCodeResult(303);
         }
         return View(cart);
     }
