@@ -74,7 +74,15 @@ public class CouponAPIController(AppDbContext _db, IMapper _mapper) : Controller
             _db.Coupons.Add(obj);
             _db.SaveChanges();
 
-
+            var options = new Stripe.CouponCreateOptions
+            {
+                AmountOff = (long)(couponDto.DiscountAmount * 100),
+                Name = couponDto.CouponCode,
+                Currency = "inr",
+                Id = couponDto.CouponCode,
+            };
+            var service = new Stripe.CouponService();
+            service.Create(options);
 
             _response.Result = _mapper.Map<CouponDto>(obj);
         }

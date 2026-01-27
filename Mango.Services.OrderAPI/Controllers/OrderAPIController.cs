@@ -52,27 +52,50 @@ public class OrderAPIController(
     {
         try
         {
-            var options = new Stripe.Checkout.SessionCreateOptions
+            var options = new SessionCreateOptions
             {
                 SuccessUrl = stripeRequestDto.ApprovedUrl,
                 CancelUrl = stripeRequestDto.CancelUrl,
+                LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
             };
-            foreach (var items in stripeRequestDto.OrderHeader.OrderDetails)
+            var DiscountsObj = new List<SessionDiscountOptions>()
             {
-                var sessionItem = new SessionLineItemOptions
+                new SessionDiscountOptions
                 {
-                    PriceData = new SessionLineItemPriceDataOptions {
-                        UnitAmount = (long)(items.Price * 91),
+                    Coupon=stripeRequestDto.OrderHeader.CouponCode
+                }
+            };
+
+            foreach (var item in stripeRequestDto.OrderHeader.OrderDetails)
+            {
+                var sessionLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Price * 100), // $20.99 -> 2099
                         Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Name
+                        }
                     },
-                    Quantity = items.Count,
+                    Quantity = item.Count
                 };
-                options.LineItems.Add(sessionItem);
+
+                options.LineItems.Add(sessionLineItem);
+            }
+
+            if (stripeRequestDto.OrderHeader.Discount > 0)
+            {
+                options.Discounts = DiscountsObj;
             }
             var service = new SessionService();
             Session session = service.Create(options);
-            _response.IsSuccess = true;
+            stripeRequestDto.StripeSessionUrl = session.Url;
+            OrderHeader orderHeader = _dbContext.OrderHeader.First(u => u.OrderHeaderId == stripeRequestDto.OrderHeader.OrderHeaderId);
+            orderHeader.StripeSessionId = session.Id;
+            _dbContext.SaveChanges();
             _response.Result = stripeRequestDto;
         }
         catch (Exception ex)
