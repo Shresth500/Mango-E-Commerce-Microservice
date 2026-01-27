@@ -123,7 +123,8 @@ public class CouponAPIController(AppDbContext _db, IMapper _mapper) : Controller
             Coupon obj = _db.Coupons.First(u => u.CouponId == id);
             _db.Coupons.Remove(obj);
             _db.SaveChanges();
-
+            var service = new Stripe.CouponService();
+            service.Delete(obj.CouponCode);
 
         }
         catch (Exception ex)
