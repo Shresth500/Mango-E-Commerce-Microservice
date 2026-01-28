@@ -119,6 +119,15 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
     [Authorize]
     public async Task<IActionResult> Confirmation(int orderid)
     {
-        return View(orderid);
+        var response = await _orderService.ValidateStripeSession(orderid);
+        if (response != null && response.IsSuccess)
+        {
+            var orderHeader = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result)!);
+            if (orderHeader!.Status == SD.Status_Approved)
+            {
+                return View(orderid);
+            }
+        }
+        return View();
     }
 }
