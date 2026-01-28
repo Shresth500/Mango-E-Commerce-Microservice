@@ -27,4 +27,14 @@ public class OrderService(IBaseService _baseService) : IOrderService
 
         });
     }
+
+    public async Task<ResponseDto?> ValidateStripeSession(int orderHeaderId)
+    {
+        return await _baseService.SendAsync( new RequestDto
+        {
+            Url = SD.OrderAPI + "/api/OrderAPI/ValidateStripeSession",
+            Data = orderHeaderId,
+            ApiType = SD.ApiType.POST
+        });
+    }
 }

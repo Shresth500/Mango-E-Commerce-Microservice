@@ -76,7 +76,7 @@ public class CouponAPIController(AppDbContext _db, IMapper _mapper) : Controller
 
             var options = new Stripe.CouponCreateOptions
             {
-                AmountOff = (long)couponDto.DiscountAmount,
+                AmountOff = (long)(couponDto.DiscountAmount*100),
                 Name = couponDto.CouponCode,
                 Currency = "inr",
                 Id = couponDto.CouponCode,

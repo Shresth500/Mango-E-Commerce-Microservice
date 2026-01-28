@@ -6,6 +6,8 @@ using Mango.Services.OrderAPI.Service.IService;
 using Mango.Services.OrderAPI.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Stripe.Checkout;
 
 namespace Mango.Services.OrderAPI.Controllers;
@@ -72,7 +74,7 @@ public class OrderAPIController(
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = (long)item.Price,
+                        UnitAmount = (long)(item.Price*100),
                         Currency = "inr",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -96,6 +98,36 @@ public class OrderAPIController(
             orderHeader.StripeSessionId = session.Id;
             _dbContext.SaveChanges();
             _response.Result = stripeRequestDto;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.Message = ex.Message;
+        }
+        return _response;
+    }
+
+    [Authorize]
+    [HttpPost("ValidateStripeSession")]
+    public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
+    {
+        try
+        {
+            OrderHeader orderHeader = _dbContext.OrderHeader.First(u => u.OrderHeaderId == orderHeaderId);
+            var service = new SessionService();
+            Session session = service.Get(orderHeader.StripeSessionId);
+            
+            var paymentIntentService = new PaymentIntentService();
+            PaymentIntent paymentIntent = paymentIntentService.Get(session.PaymentIntentId);
+
+            if(paymentIntent.Status == "succeeded")
+            {
+                orderHeader.PaymentIntentId = paymentIntent.Id;
+                orderHeader.Status = SD.Status_Approved;
+                await _dbContext.SaveChangesAsync();
+                _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+            }
+
         }
         catch (Exception ex)
         {
