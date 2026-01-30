@@ -28,6 +28,34 @@ public class OrderService(IBaseService _baseService) : IOrderService
         });
     }
 
+    public async Task<ResponseDto?> GetAllOrder(string? userId)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = SD.ApiType.GET,
+            Url = SD.OrderAPI + "/api/OrderAPI/GetOrders?userId=" + userId
+        });
+    }
+
+    public async Task<ResponseDto?> GetOrder(int orderId)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = SD.ApiType.GET,
+            Url = SD.OrderAPI + "/api/OrderAPI/GetOrder/" + orderId
+        });
+    }
+
+    public async Task<ResponseDto?> UpdateOrderStatus(int orderId, string newStatus)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = SD.ApiType.POST,
+            Data = newStatus,
+            Url = SD.OrderAPI + "/api/OrderAPI/UpdateOrderStatus/" + orderId
+        });
+    }
+
     public async Task<ResponseDto?> ValidateStripeSession(int orderHeaderId)
     {
         return await _baseService.SendAsync( new RequestDto
