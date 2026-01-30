@@ -124,7 +124,7 @@ public class OrderAPIController(
                         Currency = "inr",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = item.Product.Name
+                            Name = item.Product!.Name
                         }
                     },
                     Quantity = item.Count
