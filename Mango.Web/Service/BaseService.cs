@@ -2,6 +2,7 @@
 using Mango.Web.Service.IService;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using static Mango.Web.Utility.SD;
@@ -14,33 +15,41 @@ public class BaseService(IHttpClientFactory httpClientFactory,ITokenProvider _to
     {
         try
         {
-            HttpClient httpClient = httpClientFactory.CreateClient();
-            HttpRequestMessage httpRequestMessage = new();
-
-            httpRequestMessage.RequestUri = new Uri(requestDto.Url);
-
+            HttpClient client = httpClientFactory.CreateClient("MangoAPI");
+            HttpRequestMessage message = new();
+            if (requestDto.ContentType == ContentType.MultipartFormData)
+            {
+                message.Headers.Add("Accept", "*/*");
+            }
+            else
+            {
+                message.Headers.Add("Accept", "application/json");
+            }
+            //token
             if (withBearer)
             {
                 var token = _tokenProvider.GetToken();
-                httpRequestMessage.Headers.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                message.Headers.Add("Authorization", $"Bearer {token}");
             }
+
+            message.RequestUri = new Uri(requestDto.Url);
 
             if (requestDto.ContentType == ContentType.MultipartFormData)
             {
-                httpRequestMessage.Headers.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("*/*"));
-
                 var content = new MultipartFormDataContent();
 
                 foreach (var prop in requestDto.Data.GetType().GetProperties())
                 {
                     var value = prop.GetValue(requestDto.Data);
 
-                    if (value is IFormFile file)
+                    if (value is IFormFile file && file.Length > 0)
                     {
+                        var streamContent = new StreamContent(file.OpenReadStream());
+                        streamContent.Headers.ContentType =
+                            new MediaTypeHeaderValue(file.ContentType);
+
                         content.Add(
-                            new StreamContent(file.OpenReadStream()),
+                            streamContent,
                             prop.Name,
                             file.FileName
                         );
@@ -48,59 +57,70 @@ public class BaseService(IHttpClientFactory httpClientFactory,ITokenProvider _to
                     else
                     {
                         content.Add(
-                            new StringContent(value?.ToString() ?? ""),
+                            new StringContent(value?.ToString() ?? string.Empty),
                             prop.Name
                         );
                     }
                 }
 
-                httpRequestMessage.Content = content;
+                message.Content = content;
             }
             else
             {
-                httpRequestMessage.Headers.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
-
                 if (requestDto.Data != null)
                 {
-                    httpRequestMessage.Content = new StringContent(
-                        JsonConvert.SerializeObject(requestDto.Data),
-                        Encoding.UTF8,
-                        "application/json"
-                    );
+                    message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
                 }
             }
 
-            httpRequestMessage.Method = requestDto.ApiType switch
-            {
-                ApiType.POST => HttpMethod.Post,
-                ApiType.PUT => HttpMethod.Put,
-                ApiType.DELETE => HttpMethod.Delete,
-                _ => HttpMethod.Get
-            };
 
-            var apiResponse = await httpClient.SendAsync(httpRequestMessage);
 
-            if (!apiResponse.IsSuccessStatusCode)
+
+
+            HttpResponseMessage? apiResponse = null;
+
+            switch (requestDto.ApiType)
             {
-                return new ResponseDto
-                {
-                    IsSuccess = false,
-                    Message = apiResponse.StatusCode.ToString()
-                };
+                case ApiType.POST:
+                    message.Method = HttpMethod.Post;
+                    break;
+                case ApiType.DELETE:
+                    message.Method = HttpMethod.Delete;
+                    break;
+                case ApiType.PUT:
+                    message.Method = HttpMethod.Put;
+                    break;
+                default:
+                    message.Method = HttpMethod.Get;
+                    break;
             }
 
-            var apiContent = await apiResponse.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ResponseDto>(apiContent);
+            apiResponse = await client.SendAsync(message);
+
+            switch (apiResponse.StatusCode)
+            {
+                case HttpStatusCode.NotFound:
+                    return new() { IsSuccess = false, Message = "Not Found" };
+                case HttpStatusCode.Forbidden:
+                    return new() { IsSuccess = false, Message = "Access Denied" };
+                case HttpStatusCode.Unauthorized:
+                    return new() { IsSuccess = false, Message = "Unauthorized" };
+                case HttpStatusCode.InternalServerError:
+                    return new() { IsSuccess = false, Message = "Internal Server Error" };
+                default:
+                    var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                    var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
+                    return apiResponseDto;
+            }
         }
         catch (Exception ex)
         {
-            return new ResponseDto
+            var dto = new ResponseDto
             {
-                IsSuccess = false,
-                Message = ex.Message
+                Message = ex.Message.ToString(),
+                IsSuccess = false
             };
+            return dto;
         }
     }
-
 }

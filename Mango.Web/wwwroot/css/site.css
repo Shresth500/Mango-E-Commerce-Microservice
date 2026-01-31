@@ -20,3 +20,9 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.product-image {
+    height: 250px; /* same height for all images */
+    width: 100%;
+    object-fit: cover; /* crop without stretching */
+}

@@ -49,7 +49,7 @@ public class ProductAPIController(AppDbContext _db,IMapper _mapper) : Controller
 
     [HttpPost]
     [Authorize(Roles = "ADMIN")]
-    public ResponseDto Post(ProductDto ProductDto)
+    public ResponseDto Post([FromForm]ProductDto ProductDto)
     {
         try
         {
@@ -61,7 +61,7 @@ public class ProductAPIController(AppDbContext _db,IMapper _mapper) : Controller
             {
 
                 string fileName = product.ProductId + Path.GetExtension(ProductDto.Image.FileName);
-                string filePath = @"wwwroot\ProductImages\" + fileName;
+                string filePath = @"wwwroot\ProductImage\" + fileName;
 
                 //I have added the if condition to remove the any image with same name if that exist in the folder by any change
                 var directoryLocation = Path.Combine(Directory.GetCurrentDirectory(), filePath);
@@ -77,7 +77,7 @@ public class ProductAPIController(AppDbContext _db,IMapper _mapper) : Controller
                     ProductDto.Image.CopyTo(fileStream);
                 }
                 var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
-                product.ImageUrl = baseUrl + "/ProductImages/" + fileName;
+                product.ImageUrl = baseUrl + "/ProductImage/" + fileName;
                 product.ImageLocalPath = filePath;
             }
             else
@@ -99,7 +99,7 @@ public class ProductAPIController(AppDbContext _db,IMapper _mapper) : Controller
 
     [HttpPut]
     [Authorize(Roles = "ADMIN")]
-    public ResponseDto Put(ProductDto ProductDto)
+    public ResponseDto Put([FromForm]ProductDto ProductDto)
     {
         try
         {
@@ -118,14 +118,14 @@ public class ProductAPIController(AppDbContext _db,IMapper _mapper) : Controller
                 }
 
                 string fileName = product.ProductId + Path.GetExtension(ProductDto.Image.FileName);
-                string filePath = @"wwwroot\ProductImages\" + fileName;
+                string filePath = @"wwwroot\ProductImage\" + fileName;
                 var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
                 using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
                 {
                     ProductDto.Image.CopyTo(fileStream);
                 }
                 var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
-                product.ImageUrl = baseUrl + "/ProductImages/" + fileName;
+                product.ImageUrl = baseUrl + "/ProductImage/" + fileName;
                 product.ImageLocalPath = filePath;
             }
 
