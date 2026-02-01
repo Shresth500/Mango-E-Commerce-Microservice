@@ -59,6 +59,7 @@ public class ShoppingCartAPIController(AppDbContext _dbContext,
         }
     }
 
+
     [HttpPost("ApplyCoupon")]
     public async Task<IActionResult> ApplyCoupon([FromBody]CartDto cart)
     {
