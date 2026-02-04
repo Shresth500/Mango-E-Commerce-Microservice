@@ -15,6 +15,7 @@
 #####################################
 **/secrets.json
 **/secrets.*.json
+**/appsettings.Production.json
 
 #####################################
 # User & IDE files
