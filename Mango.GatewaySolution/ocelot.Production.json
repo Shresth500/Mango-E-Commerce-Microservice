@@ -1,0 +1,254 @@
+{
+  "Routes": [
+    // ProductAPI
+    {
+      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamPathTemplate": "/api/ProductAPI",
+      "DownstreamPathTemplate": "/api/ProductAPI",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceproductapi-bpheefb7echffhdm.canadacentral-01.azurewebsites.net"
+        }
+      ]
+    },
+    {
+      "UpstreamHttpMethod": [ "Get", "DELETE" ],
+      "UpstreamPathTemplate": "/api/ProductAPI/{id}",
+      "DownstreamPathTemplate": "/api/ProductAPI/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceproductapi-bpheefb7echffhdm.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST", "PUT" ],
+      "UpstreamPathTemplate": "/api/ProductAPI",
+      "DownstreamPathTemplate": "/api/ProductAPI",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceproductapi-bpheefb7echffhdm.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+
+    // CouponAPI
+    {
+      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamPathTemplate": "/api/CouponAPI",
+      "DownstreamPathTemplate": "/api/CouponAPI",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoservicecouponapi-avgbhqemg8f5arat.canadacentral-01.azurewebsites.net"
+        }
+      ]
+    },
+    {
+      "UpstreamHttpMethod": [ "Get", "DELETE" ],
+      "UpstreamPathTemplate": "/api/CouponAPI/{id}",
+      "DownstreamPathTemplate": "/api/CouponAPI/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoservicecouponapi-avgbhqemg8f5arat.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamPathTemplate": "/api/CouponAPI/{code}",
+      "DownstreamPathTemplate": "/api/CouponAPI/{code}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoservicecouponapi-avgbhqemg8f5arat.canadacentral-01.azurewebsites.net"
+        }
+      ]
+    },
+    {
+      "UpstreamHttpMethod": [ "POST", "PUT" ],
+      "UpstreamPathTemplate": "/api/CouponAPI",
+      "DownstreamPathTemplate": "/api/CouponAPI",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoservicecouponapi-avgbhqemg8f5arat.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+
+    // ShoppingCartAPI
+    {
+      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamPathTemplate": "/api/ShoppingCartAPI/GetCart/{userId}",
+      "DownstreamPathTemplate": "/api/ShoppingCartAPI/GetCart/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceshoppingcartapi-c6hqg5chaydrg6ey.canadacentral-01.azurewebsites.net"
+        }
+      ]
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/ShoppingCartAPI/ApplyCoupon",
+      "DownstreamPathTemplate": "/api/ShoppingCartAPI/ApplyCoupon",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceshoppingcartapi-c6hqg5chaydrg6ey.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/ShoppingCartAPI/CartUpsert",
+      "DownstreamPathTemplate": "/api/ShoppingCartAPI/CartUpsert",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceshoppingcartapi-c6hqg5chaydrg6ey.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/ShoppingCartAPI/RemoveCart",
+      "DownstreamPathTemplate": "/api/ShoppingCartAPI/RemoveCart",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceshoppingcartapi-c6hqg5chaydrg6ey.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/ShoppingCartAPI/EmailCartRequest",
+      "DownstreamPathTemplate": "/api/ShoppingCartAPI/EmailCartRequest",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceshoppingcartapi-c6hqg5chaydrg6ey.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+
+    //OrderAPI
+    {
+      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamPathTemplate": "/api/OrderAPI/GetOrders",
+      "DownstreamPathTemplate": "/api/OrderAPI/GetOrders",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceorderapi-dpapgxcadygda3d6.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamPathTemplate": "/api/OrderAPI/GetOrder/{id}",
+      "DownstreamPathTemplate": "/api/OrderAPI/GetOrder/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceorderapi-dpapgxcadygda3d6.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/OrderAPI/CreateOrder",
+      "DownstreamPathTemplate": "/api/OrderAPI/CreateOrder",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceorderapi-dpapgxcadygda3d6.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/OrderAPI/CreateStripeSession",
+      "DownstreamPathTemplate": "/api/OrderAPI/CreateStripeSession",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceorderapi-dpapgxcadygda3d6.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/OrderAPI/ValidateStripeSession",
+      "DownstreamPathTemplate": "/api/OrderAPI/ValidateStripeSession",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceorderapi-dpapgxcadygda3d6.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/api/OrderAPI/UpdateOrderStatus/{orderId}",
+      "DownstreamPathTemplate": "/api/OrderAPI/UpdateOrderStatus/{orderId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mangoserviceorderapi-dpapgxcadygda3d6.canadacentral-01.azurewebsites.net"
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://mangogatewaysolution-duftang2hwf9dbf9.canadacentral-01.azurewebsites.net"
+  }
+}
