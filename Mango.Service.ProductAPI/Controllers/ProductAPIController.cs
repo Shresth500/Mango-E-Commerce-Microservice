@@ -5,7 +5,6 @@ using Mango.Services.ProductAPI.Data;
 using Mango.Services.ProductAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Service.ProductAPI.Controllers;
 
